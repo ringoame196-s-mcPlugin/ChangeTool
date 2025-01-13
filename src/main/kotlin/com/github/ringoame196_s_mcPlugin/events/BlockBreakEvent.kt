@@ -1,7 +1,7 @@
 package com.github.ringoame196_s_mcPlugin.events
 
-import com.github.ringoame196_s_mcPlugin.DataManager
-import com.github.ringoame196_s_mcPlugin.ToolManager
+import com.github.ringoame196_s_mcPlugin.managers.DataManager
+import com.github.ringoame196_s_mcPlugin.managers.ToolManager
 import org.bukkit.ChatColor
 import org.bukkit.Sound
 import org.bukkit.event.EventHandler
@@ -25,13 +25,15 @@ class BlockBreakEvent : Listener {
 
         val damage = toolManager.acquisitionEnduranceValue(item) ?: return
         val changeEnduranceValue = DataManager.acquisitionChangeEnduranceValue(uuid)
+        if (changeEnduranceValue == 0) return
         if (damage > changeEnduranceValue) return
 
         val changeItem = toolManager.changeItem(player, item, slot)
+
+        // 通知
         val title: String
         val message: String
         val sound: Sound
-
         if (changeItem != null) {
             title = "${ChatColor.YELLOW}アイテムを切り替えました"
             val changeItemName = if (!changeItem.itemMeta?.displayName.isNullOrBlank()) {
@@ -39,7 +41,7 @@ class BlockBreakEvent : Listener {
             } else {
                 changeItem.type.name.replace("_", " ").lowercase()
             }
-            message = "${ChatColor.GOLD}${changeItemName}に切り替えました"
+            message = "${ChatColor.GOLD}${changeItemName}${ChatColor.GOLD}に切り替えました"
             sound = Sound.BLOCK_ANVIL_USE
         } else {
             e.isCancelled = true

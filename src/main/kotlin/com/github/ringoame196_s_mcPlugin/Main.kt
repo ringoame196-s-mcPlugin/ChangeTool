@@ -9,7 +9,10 @@ class Main : JavaPlugin() {
     private val plugin = this
     override fun onEnable() {
         super.onEnable()
+        saveResource("playerData.db", false)
+        val dbFilePath = "${plugin.dataFolder.path}/playerData.db"
         server.pluginManager.registerEvents(BlockBreakEvent(), plugin)
+        Data.dbFilePath = dbFilePath
         val command = getCommand("changetool")
         command!!.setExecutor(Command())
         command.tabCompleter = TabCompleter()
